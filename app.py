@@ -36,14 +36,12 @@ with col_prev:
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("← Prev", key="prev_btn", use_container_width=True, disabled=st.session_state.q_index <= 0):
         st.session_state.q_index -= 1
-        st.session_state.prev_selectbox_value = questions[st.session_state.q_index]
         st.rerun()
 
 with col_next:
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("Next →", key="next_btn", use_container_width=True, disabled=st.session_state.q_index >= len(questions) - 1):
         st.session_state.q_index += 1
-        st.session_state.prev_selectbox_value = questions[st.session_state.q_index]
         st.rerun()
 
 with col_select:
@@ -54,7 +52,8 @@ with col_select:
         key="question_select",
     )
     # Only update q_index if the selectbox value actually changed from user interaction
-    if st.session_state.prev_selectbox_value is not None and selected_question != st.session_state.prev_selectbox_value:
+    current_question_from_index = questions[st.session_state.q_index]
+    if st.session_state.prev_selectbox_value is not None and selected_question != current_question_from_index:
         new_index = questions.index(selected_question)
         st.session_state.q_index = new_index
     st.session_state.prev_selectbox_value = selected_question
