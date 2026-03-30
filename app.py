@@ -256,3 +256,45 @@ for idx, (row_idx, row) in enumerate(filtered.iterrows()):
     
     st.write("")
     st.write("")
+
+# Download feedback section
+st.divider()
+if st.session_state.feedback:
+    st.subheader("📥 Download Your Annotations")
+    
+    total_annotations = len(st.session_state.feedback)
+    complete_annotations = sum(1 for f in st.session_state.feedback.values() 
+                                if f.get("completeness") and f.get("correctness") and f.get("satisfaction"))
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric("Total Responses Annotated", total_annotations)
+    with col2:
+        st.metric("Fully Annotated", complete_annotations)
+    
+    # Prepare the feedback data with metadata
+    export_data = {
+        "metadata": {
+            "export_date": datetime.now().isoformat(),
+            "total_annotations": total_annotations,
+            "fully_annotated": complete_annotations,
+            "csv_file": CSV_PATH
+        },
+        "annotations": st.session_state.feedback
+    }
+    
+    feedback_json = json.dumps(export_data, indent=2, ensure_ascii=False)
+    
+    st.download_button(
+        label="📥 Download Annotations as JSON",
+        data=feedback_json,
+        file_name=f"benchmark_annotations_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+        mime="application/json",
+        use_container_width=True,
+        help="Download your feedback and annotations to share with the team"
+    )
+    
+    st.info("💡 After downloading, you can share this file via email or upload it to a shared folder.")
+else:
+    st.info("No annotations yet. Rate some responses to enable downloading your feedback.")
+
