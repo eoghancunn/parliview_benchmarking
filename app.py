@@ -27,9 +27,6 @@ if "q_index" not in st.session_state:
 if "feedback" not in st.session_state:
     st.session_state.feedback = {}
 
-if "prev_selectbox_value" not in st.session_state:
-    st.session_state.prev_selectbox_value = None
-
 col_prev, col_select, col_next = st.columns([1, 6, 1])
 
 with col_prev:
@@ -49,14 +46,12 @@ with col_select:
         "Select a question",
         questions,
         index=st.session_state.q_index,
-        key="question_select",
     )
     # Only update q_index if the selectbox value actually changed from user interaction
     current_question_from_index = questions[st.session_state.q_index]
-    if st.session_state.prev_selectbox_value is not None and selected_question != current_question_from_index:
+    if selected_question != current_question_from_index:
         new_index = questions.index(selected_question)
         st.session_state.q_index = new_index
-    st.session_state.prev_selectbox_value = selected_question
 
 filtered = df[df["question"] == questions[st.session_state.q_index]]
 
