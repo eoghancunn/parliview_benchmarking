@@ -31,13 +31,13 @@ col_prev, col_select, col_next = st.columns([1, 6, 1])
 
 with col_prev:
     st.markdown("<br>", unsafe_allow_html=True)
-    if st.button("← Prev", use_container_width=True, disabled=st.session_state.q_index <= 0):
+    if st.button("← Prev", key="prev_btn", use_container_width=True, disabled=st.session_state.q_index <= 0):
         st.session_state.q_index -= 1
         st.rerun()
 
 with col_next:
     st.markdown("<br>", unsafe_allow_html=True)
-    if st.button("Next →", use_container_width=True, disabled=st.session_state.q_index >= len(questions) - 1):
+    if st.button("Next →", key="next_btn", use_container_width=True, disabled=st.session_state.q_index >= len(questions) - 1):
         st.session_state.q_index += 1
         st.rerun()
 
