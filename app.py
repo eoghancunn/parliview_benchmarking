@@ -66,7 +66,12 @@ for idx, (row_idx, row) in enumerate(filtered.iterrows()):
     if duration is not None and not pd.isna(duration):
         header_parts.append(f"**Duration:** `{duration:.2f}s`")
     
-    feedback_key = f"{selected_question}_{row_idx}"
+    # Use request_id if available, otherwise use row index for unique identification
+    request_id = row.get("request_id", "")
+    if request_id and not pd.isna(request_id):
+        feedback_key = f"{request_id}"
+    else:
+        feedback_key = f"{selected_question}_{row_idx}_{idx}"
     
     with st.expander(
         f"Response {idx + 1}  —  {status}  —  {duration:.1f}s"
