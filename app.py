@@ -96,20 +96,14 @@ for idx, (row_idx, row) in enumerate(filtered.iterrows()):
             if st.button("✅ Complete", key=f"complete_{feedback_key}", use_container_width=True, type="primary" if current_feedback.get("completeness") == "complete" else "secondary"):
                 st.session_state.feedback[feedback_key] = st.session_state.feedback.get(feedback_key, {})
                 st.session_state.feedback[feedback_key]["completeness"] = "complete"
-                st.rerun()
         with col2:
             if st.button("⚠️ Partially Complete", key=f"partial_{feedback_key}", use_container_width=True, type="primary" if current_feedback.get("completeness") == "partially_complete" else "secondary"):
                 st.session_state.feedback[feedback_key] = st.session_state.feedback.get(feedback_key, {})
                 st.session_state.feedback[feedback_key]["completeness"] = "partially_complete"
-                st.rerun()
         with col3:
             if st.button("❌ Incomplete", key=f"incomplete_{feedback_key}", use_container_width=True, type="primary" if current_feedback.get("completeness") == "incomplete" else "secondary"):
                 st.session_state.feedback[feedback_key] = st.session_state.feedback.get(feedback_key, {})
                 st.session_state.feedback[feedback_key]["completeness"] = "incomplete"
-                st.rerun()
-        
-        if current_feedback.get("completeness"):
-            st.success(f"Completeness: {current_feedback['completeness'].replace('_', ' ').title()}")
         
         st.markdown("**Correctness:**")
         col4, col5, col6 = st.columns(3)
@@ -117,20 +111,14 @@ for idx, (row_idx, row) in enumerate(filtered.iterrows()):
             if st.button("✅ Correct", key=f"correct_{feedback_key}", use_container_width=True, type="primary" if current_feedback.get("correctness") == "correct" else "secondary"):
                 st.session_state.feedback[feedback_key] = st.session_state.feedback.get(feedback_key, {})
                 st.session_state.feedback[feedback_key]["correctness"] = "correct"
-                st.rerun()
         with col5:
             if st.button("⚠️ Mostly Correct", key=f"mostly_correct_{feedback_key}", use_container_width=True, type="primary" if current_feedback.get("correctness") == "mostly_correct" else "secondary"):
                 st.session_state.feedback[feedback_key] = st.session_state.feedback.get(feedback_key, {})
                 st.session_state.feedback[feedback_key]["correctness"] = "mostly_correct"
-                st.rerun()
         with col6:
             if st.button("❌ Incorrect", key=f"incorrect_{feedback_key}", use_container_width=True, type="primary" if current_feedback.get("correctness") == "incorrect" else "secondary"):
                 st.session_state.feedback[feedback_key] = st.session_state.feedback.get(feedback_key, {})
                 st.session_state.feedback[feedback_key]["correctness"] = "incorrect"
-                st.rerun()
-        
-        if current_feedback.get("correctness"):
-            st.success(f"Correctness: {current_feedback['correctness'].replace('_', ' ').title()}")
         
         st.markdown("**Satisfaction/Desirability:**")
         col7, col8, col9 = st.columns(3)
@@ -138,20 +126,14 @@ for idx, (row_idx, row) in enumerate(filtered.iterrows()):
             if st.button("😀 Very Satisfying", key=f"very_satisfying_{feedback_key}", use_container_width=True, type="primary" if current_feedback.get("satisfaction") == "very_satisfying" else "secondary"):
                 st.session_state.feedback[feedback_key] = st.session_state.feedback.get(feedback_key, {})
                 st.session_state.feedback[feedback_key]["satisfaction"] = "very_satisfying"
-                st.rerun()
         with col8:
             if st.button("😐 Somewhat Satisfying", key=f"somewhat_satisfying_{feedback_key}", use_container_width=True, type="primary" if current_feedback.get("satisfaction") == "somewhat_satisfying" else "secondary"):
                 st.session_state.feedback[feedback_key] = st.session_state.feedback.get(feedback_key, {})
                 st.session_state.feedback[feedback_key]["satisfaction"] = "somewhat_satisfying"
-                st.rerun()
         with col9:
             if st.button("😞 Not Satisfying", key=f"not_satisfying_{feedback_key}", use_container_width=True, type="primary" if current_feedback.get("satisfaction") == "not_satisfying" else "secondary"):
                 st.session_state.feedback[feedback_key] = st.session_state.feedback.get(feedback_key, {})
                 st.session_state.feedback[feedback_key]["satisfaction"] = "not_satisfying"
-                st.rerun()
-        
-        if current_feedback.get("satisfaction"):
-            st.success(f"Satisfaction: {current_feedback['satisfaction'].replace('_', ' ').title()}")
         
         comments = st.text_area(
             "Additional comments (optional):",
