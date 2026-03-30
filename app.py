@@ -42,21 +42,18 @@ with col_next:
         st.rerun()
 
 with col_select:
-    def update_question_index():
-        new_index = questions.index(st.session_state.question_select)
-        st.session_state.q_index = new_index
-    
-    st.selectbox(
+    selected_question = st.selectbox(
         "Select a question",
         questions,
         index=st.session_state.q_index,
         key="question_select",
-        on_change=update_question_index
     )
+    # Update q_index if user changed the dropdown
+    new_index = questions.index(selected_question)
+    if new_index != st.session_state.q_index:
+        st.session_state.q_index = new_index
 
-# Use the q_index to get the current question
-selected_question = questions[st.session_state.q_index]
-filtered = df[df["question"] == selected_question]
+filtered = df[df["question"] == questions[st.session_state.q_index]]
 
 for idx, (row_idx, row) in enumerate(filtered.iterrows()):
     answer = row.get("overall_summary", "")
