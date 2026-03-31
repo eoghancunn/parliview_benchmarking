@@ -555,7 +555,8 @@ st.subheader("📤 Load Previous Annotations")
 uploaded_file = st.file_uploader(
     "Upload a previously saved annotation file to continue your work:",
     type=['json'],
-    help="Upload the JSON file you downloaded earlier to restore your progress"
+    help="Upload the JSON file you downloaded earlier to restore your progress",
+    key="annotation_uploader"
 )
 
 if uploaded_file is not None:
@@ -565,11 +566,20 @@ if uploaded_file is not None:
         # Validate the structure
         if "annotations" in uploaded_data:
             # Show preview of what will be loaded
-            st.info(f"📋 Found {len(uploaded_data['annotations'])} annotations in this file")
+            num_annotations = len(uploaded_data['annotations'])
+            st.info(f"📋 Found {num_annotations} annotations in this file")
             
-            if st.button("Load Annotations", type="primary"):
+            # Show a sample of what will be loaded
+            if num_annotations > 0:
+                sample_key = list(uploaded_data['annotations'].keys())[0]
+                sample = uploaded_data['annotations'][sample_key]
+                st.caption(f"Sample: {len([k for k in sample.keys() if sample.get(k)])} ratings")
+            
+            if st.button("Load Annotations", type="primary", key="load_btn"):
+                # Load the annotations into session state
                 st.session_state.feedback = uploaded_data["annotations"]
-                st.success(f"✅ Successfully loaded {len(uploaded_data['annotations'])} annotations!")
+                st.success(f"✅ Successfully loaded {num_annotations} annotations!")
+                st.balloons()
                 st.rerun()
         else:
             st.error("❌ Invalid annotation file format. Please upload a valid annotations JSON file.")
