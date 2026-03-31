@@ -150,35 +150,6 @@ with st.expander("📖 Evaluation Instructions - Click to expand", expanded=Fals
     repetition. The content is sound; the presentation makes it difficult to use.
     """)
 
-# Upload existing annotations section
-st.divider()
-st.subheader("📤 Load Previous Annotations (Optional)")
-
-uploaded_file = st.file_uploader(
-    "Upload a previously saved annotation file to continue your work:",
-    type=['json'],
-    help="Upload the JSON file you downloaded earlier to restore your progress"
-)
-
-if uploaded_file is not None:
-    try:
-        import json
-        uploaded_data = json.load(uploaded_file)
-        
-        # Validate the structure
-        if "annotations" in uploaded_data:
-            # Merge uploaded annotations with existing ones
-            if st.button("Load Annotations", type="primary"):
-                st.session_state.feedback = uploaded_data["annotations"]
-                st.success(f"✅ Successfully loaded {len(uploaded_data['annotations'])} annotations!")
-                st.rerun()
-        else:
-            st.error("❌ Invalid annotation file format. Please upload a valid annotations JSON file.")
-    except Exception as e:
-        st.error(f"❌ Error loading file: {str(e)}")
-
-st.divider()
-
 questions = df["question"].dropna().unique().tolist()
 
 if "q_index" not in st.session_state:
@@ -431,7 +402,7 @@ for idx, (row_idx, row) in enumerate(filtered.iterrows()):
             st.session_state.feedback[feedback_key] = st.session_state.feedback.get(feedback_key, {})
             st.session_state.feedback[feedback_key]["comments"] = comments
     
-    # Research process section - OUTSIDE the expander
+    # Research process section - Collapsible
     captured_sse_events = row.get("captured_sse_events", "")
     if captured_sse_events and not pd.isna(captured_sse_events):
         try:
@@ -441,61 +412,63 @@ for idx, (row_idx, row) in enumerate(filtered.iterrows()):
             if isinstance(events, dict):
                 search_llm_messages = events.get('search_llm_message', [])
                 test_source_debug = events.get('test_source_debug', [])
-                    
-                # Display each search LLM message with related sources
-                for step_idx, step in enumerate(search_llm_messages):
-                    phase = step.get('payload', {}).get('phase', 'unknown')
-                    text = step.get('payload', {}).get('text', '')
-                    timestamp = step.get('timestamp', 'N/A')
-                    
-                    # Phase container
-                    with st.container(border=True):
-                        st.subheader(f"Phase {step_idx + 1}: {phase.replace('_', ' ').title()}")
-                        if timestamp != 'N/A':
-                            dt = datetime.fromtimestamp(timestamp)
+                
+                # Make the entire research process collapsible
+                with st.expander("🔍 Research Process - Click to expand", expanded=False):
+                    # Display each search LLM message with related sources
+                    for step_idx, step in enumerate(search_llm_messages):
+                        phase = step.get('payload', {}).get('phase', 'unknown')
+                        text = step.get('payload', {}).get('text', '')
+                        timestamp = step.get('timestamp', 'N/A')
                         
-                        # LLM Message
-                        st.write("**LLM Strategy:**")
-                        st.info(f'"{text}"')
-                        
-                        # Find matching debug events for this phase
-                        matching_events = [e for e in test_source_debug if e.get('payload', {}).get('phase') == phase]
-                        
-                        if matching_events:
-                            st.write("**Tools & Sources:**")
+                        # Phase container
+                        with st.container(border=True):
+                            st.subheader(f"Phase {step_idx + 1}: {phase.replace('_', ' ').title()}")
+                            if timestamp != 'N/A':
+                                dt = datetime.fromtimestamp(timestamp)
                             
-                            for event_idx, event in enumerate(matching_events):
-                                payload = event.get('payload', {})
-                                if 'tool' in payload:
-                                    tool = payload['tool']
-                                else:
-                                    continue
-                                source_count = payload.get('source_count', 0)
-                                snapshot_kind = payload.get('snapshot_kind', '')
+                            # LLM Message
+                            st.write("**LLM Strategy:**")
+                            st.info(f'"{text}"')
+                            
+                            # Find matching debug events for this phase
+                            matching_events = [e for e in test_source_debug if e.get('payload', {}).get('phase') == phase]
+                            
+                            if matching_events:
+                                st.write("**Tools & Sources:**")
                                 
-                                # Tool container (indented using empty column)
-                                tool_indent, tool_content = st.columns([0.05, 0.95])
-                                with tool_content:
-                                    with st.container(border=True):
-                                        if tool:
-                                            st.write(f"🔧 **Tool:** `{tool}` ({source_count} sources)")
-                                        sources = payload.get('sources', [])
-                                        if sources:
-                                            if 'params' in sources[0]:
-                                                st.write(f"**Filter:** {" ".join([f'{k}: `{v}`' for k, v in sources[0]['params'].items()])}")
-                                            else:
-                                                query = sources[0]['source_provenance']
-                                                st.write(f"**Query:** `{query.get('query', '')}, Filters: {query.get('filters', '')}`")
-                                            if st.checkbox(f"Show Retrieved Sources ({len(sources)})", key=f"show_sources_{feedback_key}_{step_idx}_{event_idx}", value=False):
-                                                for i, source in enumerate(sources):
-                                                    title = source.get('title', '')
-                                                    text_content = source.get('text', '')
-                                                    if 'url' in source:
-                                                        url = source['url']
-                                                    else:
-                                                        doc_id = None
-                                                        if 'doc_id' in source:
-                                                            if source['doc_id'].startswith('CRE-'):
+                                for event_idx, event in enumerate(matching_events):
+                                    payload = event.get('payload', {})
+                                    if 'tool' in payload:
+                                        tool = payload['tool']
+                                    else:
+                                        continue
+                                    source_count = payload.get('source_count', 0)
+                                    snapshot_kind = payload.get('snapshot_kind', '')
+                                    
+                                    # Tool container (indented using empty column)
+                                    tool_indent, tool_content = st.columns([0.05, 0.95])
+                                    with tool_content:
+                                        with st.container(border=True):
+                                            if tool:
+                                                st.write(f"🔧 **Tool:** `{tool}` ({source_count} sources)")
+                                            sources = payload.get('sources', [])
+                                            if sources:
+                                                if 'params' in sources[0]:
+                                                    st.write(f"**Filter:** {" ".join([f'{k}: `{v}`' for k, v in sources[0]['params'].items()])}")
+                                                else:
+                                                    query = sources[0]['source_provenance']
+                                                    st.write(f"**Query:** `{query.get('query', '')}, Filters: {query.get('filters', '')}`")
+                                                if st.checkbox(f"Show Retrieved Sources ({len(sources)})", key=f"show_sources_{feedback_key}_{step_idx}_{event_idx}", value=False):
+                                                    for i, source in enumerate(sources):
+                                                        title = source.get('title', '')
+                                                        text_content = source.get('text', '')
+                                                        if 'url' in source:
+                                                            url = source['url']
+                                                        else:
+                                                            doc_id = None
+                                                            if 'doc_id' in source:
+                                                                if source['doc_id'].startswith('CRE-'):
                                                                 doc_id = source['doc_id']
                                                             else:
                                                                 doc_id = re.sub(r'\(\d{4}\)', '', source['doc_id']).replace('_', '-')
@@ -575,3 +548,30 @@ if st.session_state.feedback:
 else:
     st.info("No annotations yet. Rate some responses to enable downloading your feedback.")
 
+# Upload existing annotations section - moved to bottom
+st.divider()
+st.subheader("📤 Load Previous Annotations")
+
+uploaded_file = st.file_uploader(
+    "Upload a previously saved annotation file to continue your work:",
+    type=['json'],
+    help="Upload the JSON file you downloaded earlier to restore your progress"
+)
+
+if uploaded_file is not None:
+    try:
+        uploaded_data = json.load(uploaded_file)
+        
+        # Validate the structure
+        if "annotations" in uploaded_data:
+            # Show preview of what will be loaded
+            st.info(f"📋 Found {len(uploaded_data['annotations'])} annotations in this file")
+            
+            if st.button("Load Annotations", type="primary"):
+                st.session_state.feedback = uploaded_data["annotations"]
+                st.success(f"✅ Successfully loaded {len(uploaded_data['annotations'])} annotations!")
+                st.rerun()
+        else:
+            st.error("❌ Invalid annotation file format. Please upload a valid annotations JSON file.")
+    except Exception as e:
+        st.error(f"❌ Error loading file: {str(e)}")
