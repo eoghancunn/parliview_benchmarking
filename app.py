@@ -63,8 +63,8 @@ with st.expander("📖 Evaluation Instructions - Click to expand", expanded=Fals
 
     ---
 
-    ### 3. Desirability
-    How useful and well-presented is the answer, independent of its accuracy or completeness?
+    ### 3. Satisfaction
+    How satifying is the answer, independent of its accuracy or completeness?
 
     A factually perfect but poorly structured answer can score low here. Some questions 
     may be unanswerable by the system in a given moment — due to retrieval failure, 
@@ -72,11 +72,11 @@ with st.expander("📖 Evaluation Instructions - Click to expand", expanded=Fals
     A response that clearly explains the situation and guides the user appropriately can 
     still score high here.
 
-    - **5** — Immediately useful. Well-structured, appropriately concise, easy to act on.
+    - **5** — Clear, well-structured, appropriately concise, easy to act on.
     - **4** — Good presentation with only minor issues (e.g. slightly verbose, minor structural awkwardness).
     - **3** — Adequate. Gets the information across but requires some effort to read or parse.
-    - **2** — Presentation notably hinders usability — e.g. disorganised, key information buried.
-    - **1** — Very difficult to use. Incoherent, or so verbose that useful content is obscured.
+    - **2** — Presentation notably hinders usability — e.g. disorganised, key information buried, very disjoint or confusing.
+    - **1** — Very unsatisfying. Incoherent, or so verbose that useful content is obscured. Unclear or inconsistent about limitations or scope.
 
     ---
 
