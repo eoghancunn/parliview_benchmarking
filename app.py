@@ -469,18 +469,18 @@ for idx, (row_idx, row) in enumerate(filtered.iterrows()):
                                                             doc_id = None
                                                             if 'doc_id' in source:
                                                                 if source['doc_id'].startswith('CRE-'):
-                                                                doc_id = source['doc_id']
+                                                                    doc_id = source['doc_id']
+                                                                else:
+                                                                    doc_id = re.sub(r'\(\d{4}\)', '', source['doc_id']).replace('_', '-')
+                                                                    # Insert hyphen between last alpha char and first numeric char
+                                                                    doc_id = re.sub(r'([A-Za-z])(\d)', r'\1-\2', doc_id)
+                                                                    if doc_id.startswith('A') or doc_id.startswith('B'):
+                                                                        parts = doc_id.split('-')
+                                                                        doc_id = "-".join(parts[:2]) + f"-{parts[3]}-{parts[2]}"
+                                                            if doc_id:
+                                                                url = f'https://www.europarl.europa.eu/doceo/document/{doc_id}_EN.html'
                                                             else:
-                                                                doc_id = re.sub(r'\(\d{4}\)', '', source['doc_id']).replace('_', '-')
-                                                                # Insert hyphen between last alpha char and first numeric char
-                                                                doc_id = re.sub(r'([A-Za-z])(\d)', r'\1-\2', doc_id)
-                                                                if doc_id.startswith('A') or doc_id.startswith('B'):
-                                                                    parts = doc_id.split('-')
-                                                                    doc_id = "-".join(parts[:2]) + f"-{parts[3]}-{parts[2]}"
-                                                        if doc_id:
-                                                            url = f'https://www.europarl.europa.eu/doceo/document/{doc_id}_EN.html'
-                                                        else:
-                                                            url = None
+                                                                url = None
                                                     chunk_id = source.get('chunk_id', '')
                                                     
                                                     source_name = title or chunk_id or f"Source {i+1}"
