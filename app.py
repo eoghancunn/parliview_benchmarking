@@ -150,6 +150,35 @@ with st.expander("📖 Evaluation Instructions - Click to expand", expanded=Fals
     repetition. The content is sound; the presentation makes it difficult to use.
     """)
 
+# Upload existing annotations section
+st.divider()
+st.subheader("📤 Load Previous Annotations (Optional)")
+
+uploaded_file = st.file_uploader(
+    "Upload a previously saved annotation file to continue your work:",
+    type=['json'],
+    help="Upload the JSON file you downloaded earlier to restore your progress"
+)
+
+if uploaded_file is not None:
+    try:
+        import json
+        uploaded_data = json.load(uploaded_file)
+        
+        # Validate the structure
+        if "annotations" in uploaded_data:
+            # Merge uploaded annotations with existing ones
+            if st.button("Load Annotations", type="primary"):
+                st.session_state.feedback = uploaded_data["annotations"]
+                st.success(f"✅ Successfully loaded {len(uploaded_data['annotations'])} annotations!")
+                st.rerun()
+        else:
+            st.error("❌ Invalid annotation file format. Please upload a valid annotations JSON file.")
+    except Exception as e:
+        st.error(f"❌ Error loading file: {str(e)}")
+
+st.divider()
+
 questions = df["question"].dropna().unique().tolist()
 
 if "q_index" not in st.session_state:
