@@ -6,7 +6,7 @@ from datetime import datetime
 
 st.set_page_config(page_title="Benchmark Results Viewer", layout="wide")
 
-CSV_PATH = "benchmark_results_2.csv"
+CSV_PATH = "benchmark_results_3.csv"
 
 
 @st.cache_data
