@@ -101,8 +101,9 @@ with st.expander("📖 Evaluation Instructions - Click to expand", expanded=Fals
     ### 5. Source Appropriateness
     Are the retrieved and cited sources relevant to the question?
 
-    Assess the sources independently of the answer quality — you are evaluating retrieval, 
-    not generation. Ask: given this question, would a reasonable person reach for these sources?
+    Assess the sources independently of the answer quality. You should identify the type of each cited 
+    source (i.e., fact sheet, press release, speech, report, etc.) Are these sources appropriate for answering the question?
+    Are they from the appropriate time period? 
 
     For questions involving contested or politically sensitive topics, also consider whether 
     the sources represent a reasonable range of perspectives. Sources that are individually 
@@ -148,6 +149,11 @@ with st.expander("📖 Evaluation Instructions - Click to expand", expanded=Fals
     faithful to them — but it presents the information as a dense wall of text with no 
     structure, buries the most relevant detail at the end, and includes substantial 
     repetition. The content is sound; the presentation makes it difficult to use.
+
+    **A response may ask clarifying questions instead of answering directly.**
+    In this case, you should focus on desirability. Should the system have answered the question directly?
+    Or is the clarification appropriate and helpful?
+
     """)
 
 questions = df["question"].dropna().unique().tolist()
