@@ -481,21 +481,21 @@ for idx, (row_idx, row) in enumerate(filtered.iterrows()):
                                                                 url = f'https://www.europarl.europa.eu/doceo/document/{doc_id}_EN.html'
                                                             else:
                                                                 url = None
-                                                    chunk_id = source.get('chunk_id', '')
-                                                    
-                                                    source_name = title or chunk_id or f"Source {i+1}"
-                                                    if url:
-                                                        st.markdown(f"- [{source_name}]({url})")
-                                                    else:
-                                                        st.markdown(f"- {source_name}")
-                                                        if text_content:
-                                                            # Try to parse as JSON and pretty-print
-                                                            try:
-                                                                parsed_json = json.loads(text_content)
-                                                                st.json(parsed_json)
-                                                            except (json.JSONDecodeError, TypeError):
-                                                                # Not JSON, display as text with proper UTF-8 encoding
-                                                                st.text(text_content)
+                                                        chunk_id = source.get('chunk_id', '')
+                                                        
+                                                        source_name = title or chunk_id or f"Source {i+1}"
+                                                        if url:
+                                                            st.markdown(f"- [{source_name}]({url})")
+                                                        else:
+                                                            st.markdown(f"- {source_name}")
+                                                            if text_content:
+                                                                # Try to parse as JSON and pretty-print
+                                                                try:
+                                                                    parsed_json = json.loads(text_content)
+                                                                    st.json(parsed_json)
+                                                                except (json.JSONDecodeError, TypeError):
+                                                                    # Not JSON, display as text with proper UTF-8 encoding
+                                                                    st.text(text_content)
                         
                     st.write("")
             else:
